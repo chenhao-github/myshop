@@ -1,22 +1,11 @@
 package com.myshop.ui.dashboard;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.myshop.R;
-import com.myshop.adapter.RecDashAdapter;
+import com.myshop.ui.dashboard.adapter.RecTopicAdapter;
+import com.myshop.base.BaseAdapter;
 import com.myshop.base.BaseFragment;
 import com.myshop.interfaces.topic.TopicConstract;
 import com.myshop.model.bean.TopicBean;
@@ -33,7 +22,7 @@ public class DashboardFragment extends BaseFragment<TopicConstract.Presenter> im
     @BindView(R.id.rec_dash)
     RecyclerView rec_dash;
     private List<TopicBean.DataBeanX.DataBean> mData;
-    private RecDashAdapter mAdapter;
+    private RecTopicAdapter mAdapter;
 
     @Override
     protected int getLayout() {
@@ -50,8 +39,16 @@ public class DashboardFragment extends BaseFragment<TopicConstract.Presenter> im
         //初始化recycleview
         rec_dash.setLayoutManager(new LinearLayoutManager(getActivity()));
         mData = new ArrayList<>();
-        mAdapter = new RecDashAdapter(activity, mData);
+        mAdapter = new RecTopicAdapter(activity, mData);
         rec_dash.setAdapter(mAdapter);
+        //一个界面有一个列表时，可以用本类实现监听，如果有两个及以上，用内部类分开做
+        mAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseAdapter.BaseViewHolder holder) {
+                String title = mData.get(holder.getLayoutPosition()).getTitle();
+                showTips(title);
+            }
+        });
     }
 
     @Override
@@ -61,7 +58,6 @@ public class DashboardFragment extends BaseFragment<TopicConstract.Presenter> im
 
     @Override
     public void getTopicDataReturn(TopicBean result) {
-        mData.addAll(result.getData().getData());
-        mAdapter.notifyDataSetChanged();
+        mAdapter.updataListClearAddMore(result.getData().getData());
     }
 }

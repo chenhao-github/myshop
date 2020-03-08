@@ -41,7 +41,7 @@ public class RegistActivity extends BaseActivity<RegistConstract.Presenter> impl
     }
 
     @OnClick(R.id.btn_regist)
-    private void regist() {
+    public void regist() {
         String nickname = etNickName.getText().toString();
         String pw = etPw.getText().toString();
         if(!TextUtils.isEmpty(nickname) && !TextUtils.isEmpty(pw)){

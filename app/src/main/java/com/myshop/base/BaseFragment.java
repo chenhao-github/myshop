@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +40,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(context,view);
+        unbinder = ButterKnife.bind(this,view);
         presenter = createPresenter();
         if(presenter != null){
             presenter.attachView(this);
@@ -58,7 +59,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
 
     @Override
     public void showTips(String msg) {
-
+        Toast.makeText(context, msg , Toast.LENGTH_SHORT).show();
     }
 
     @Override

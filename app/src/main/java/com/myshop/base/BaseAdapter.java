@@ -10,19 +10,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
-    public Context mContext;
-    public List<T> mDatas;
+    protected Context mContext;
+    private List<T> mDatas;
+    private OnItemClickListener mItemClickListener;
 
     public BaseAdapter(Context context, List<T> datas) {
         mContext = context;
         mDatas = datas;
     }
 
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = View.inflate(mContext,getLayout(),null);
-        return new BaseViewHolder(view);
+        BaseViewHolder holder = new BaseViewHolder(view);
+        //条目的点击事件在此添加，onBindViewHolder比此方法更提前执行，在此更合适
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(holder);
+                }
+            }
+        });
+        return holder;
     }
 
     @Override
@@ -44,13 +59,15 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
     public void updataListClearAddMore(List<T> list){
         mDatas.clear();
         mDatas.addAll(list);
+        notifyDataSetChanged();
     }
     //累加数据
     public void updataListAddMore(List<T> list){
         mDatas.addAll(list);
+        notifyDataSetChanged();
     }
 
-    public class BaseViewHolder extends RecyclerView.ViewHolder{
+    public static class BaseViewHolder extends RecyclerView.ViewHolder{
         SparseArray views ;//通过容器收集组件,用消耗内存换每次的findviewbyid
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +82,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter {
             }
             return view;
         }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(BaseViewHolder holder);
     }
 
 

@@ -23,11 +23,7 @@ public class HomePresenter extends BasePresenter<HomeConstract.View> implements 
                 .subscribeWith(new ResourceSubscriber<HomeBean>() {
                     @Override
                     public void onNext(HomeBean homeBean) {
-                        Log.i("onNext:",homeBean.toString());
-                        Log.i("onNext:",homeBean.getData().getBanner().get(0).getContent());
-
                         mView.getHomeDataReturn(homeBean);
-
                     }
 
                     @Override
